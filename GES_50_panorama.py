@@ -79,13 +79,13 @@ def match_features(d1, d2, method='match1'):
 
     return matches
 
-matches = match_features(desc1[1], desc2[1], method='match1')
-matches = match_features(desc1[1], desc2[1], method='match2')
+matches12 = match_features(desc1[1], desc2[1], method='match1')
+matches12 = match_features(desc1[1], desc2[1], method='match2')
 
-dimg = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches, None)
+dimg12 = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches12, None)
 cv.namedWindow('main3')
-cv.imshow('main3', dimg)
-cv2.imwrite('results/GES-50/dimg.jpg', dimg)
+cv.imshow('main3', dimg12)
+cv2.imwrite('results/GES-50/dimg12.jpg', dimg12)
 cv.waitKey(0)
 
 img_pt1 = []
@@ -102,7 +102,7 @@ def create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches):
 
     return panorama
 
-panorama12 = create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches)
+panorama12 = create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches12)
 cv.namedWindow('panorama12')
 cv.imshow('panorama12', panorama12)
 cv2.imwrite('results/GES-50/panorama12.jpg', panorama12)
@@ -110,9 +110,9 @@ kp12 = sift.detect(panorama12)
 desc12 = sift.compute(panorama12, kp12)
 cv.waitKey(0)
 
-matches = match_features(desc3[1], desc4[1], method='match1')
-matches = match_features(desc3[1], desc4[1], method='match2')
-panorama34 = create_panorama(img3, img4, kp3, kp4, desc3, desc4, matches)
+matches34 = match_features(desc3[1], desc4[1], method='match1')
+matches34 = match_features(desc3[1], desc4[1], method='match2')
+panorama34 = create_panorama(img3, img4, kp3, kp4, desc3, desc4, matches34)
 cv.namedWindow('panorama34')
 cv.imshow('panorama34', panorama34)
 cv2.imwrite('results/GES-50/panorama34.jpg', panorama34)
@@ -120,20 +120,34 @@ kp34 = sift.detect(panorama34)
 desc34 = sift.compute(panorama34, kp34)
 cv.waitKey(0)
 
-final_dimg = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches, None)
+dimg34 = cv.drawMatches(img3, desc3[0], img4, desc4[0], matches34, None)
+cv.namedWindow('main3')
+cv.imshow('main3', dimg34)
+cv2.imwrite('results/GES-50/dimg34.jpg', dimg34)
+
+# Find non-black area
+gray12 = cv2.cvtColor(panorama12, cv2.COLOR_BGR2GRAY)
+_, thresh12 = cv2.threshold(gray12, 1, 255, cv2.THRESH_BINARY)
+x, y, w, h = cv2.boundingRect(thresh12)
+cropped_panorama12 = panorama12[y:y+h, x:x+w]
+
+gray34 = cv2.cvtColor(panorama34, cv2.COLOR_BGR2GRAY)
+_, thresh12 = cv2.threshold(gray34, 1, 255, cv2.THRESH_BINARY)
+x, y, w, h = cv2.boundingRect(thresh12)
+cropped_panorama34 = panorama34[y:y+h, x:x+w]
+
+matches_final = match_features(desc12[1], desc34[1], method='match1')
+matches_final = match_features(desc12[1], desc34[1], method='match2')
+final_dimg = cv.drawMatches(cropped_panorama12, desc12[0], cropped_panorama34, desc34[0], matches_final, None)
 cv.namedWindow('final_dimg')
 cv.imshow('final_dimg', final_dimg)
 cv2.imwrite('results/GES-50/final_dimg.jpg', final_dimg)
 cv.waitKey(0)
 
-matches = match_features(desc12[1], desc34[1], method='match1')
-matches = match_features(desc12[1], desc34[1], method='match2')
-final_panorama = create_panorama(panorama12, panorama34, kp1, kp4, desc12, desc34, matches)
+final_panorama = create_panorama(cropped_panorama12, cropped_panorama34, kp12, kp34, desc12, desc34, matches_final)
 cv.namedWindow('final_panorama')
 cv.imshow('final_panorama', final_panorama)
 cv2.imwrite('results/GES-50/final_panorama.jpg', final_panorama)
 cv.waitKey(0)
 
 pass
-
-

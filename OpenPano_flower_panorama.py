@@ -12,7 +12,6 @@ def resize_image(img, width=500):
     return cv2.resize(img, (width, new_height))
 
 img1 = cv.imread('img/OpenPano/flower/1.jpg')
-img1 = resize_image(img1)
 cv.namedWindow('main1')
 cv.imshow('main1', img1)
 cv.waitKey(0)
@@ -20,7 +19,6 @@ kp1 = sift.detect(img1)
 desc1 = sift.compute(img1, kp1)
 
 img2 = cv.imread('img/OpenPano/flower/2.jpg')
-img2 = resize_image(img2)
 cv.namedWindow('main2')
 cv.imshow('main2', img2)
 cv.waitKey(0)
@@ -28,7 +26,6 @@ kp2 = sift.detect(img2)
 desc2 = sift.compute(img2, kp2)
 
 img3 = cv.imread('img/OpenPano/flower/3.jpg')
-img3 = resize_image(img3)
 cv.namedWindow('main2')
 cv.imshow('main2', img3)
 cv.waitKey(0)
@@ -36,7 +33,6 @@ kp3 = sift.detect(img3)
 desc3 = sift.compute(img3, kp3)
 
 img4 = cv.imread('img/OpenPano/flower/4.jpg')
-img4 = resize_image(img4)
 cv.namedWindow('main2')
 cv.imshow('main2', img4)
 cv.waitKey(0)
@@ -120,20 +116,31 @@ kp34 = sift.detect(panorama34)
 desc34 = sift.compute(panorama34, kp34)
 cv.waitKey(0)
 
-dimg34 = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches34, None)
+dimg34 = cv.drawMatches(img3, desc3[0], img4, desc4[0], matches34, None)
 cv.namedWindow('main3')
 cv.imshow('main3', dimg34)
 cv2.imwrite('results/OpenPano/flower/dimg34.jpg', dimg34)
 
+# Find non-black area
+gray12 = cv2.cvtColor(panorama12, cv2.COLOR_BGR2GRAY)
+_, thresh12 = cv2.threshold(gray12, 1, 255, cv2.THRESH_BINARY)
+x, y, w, h = cv2.boundingRect(thresh12)
+cropped_panorama12 = panorama12[y:y+h, x:x+w]
+
+gray34 = cv2.cvtColor(panorama34, cv2.COLOR_BGR2GRAY)
+_, thresh12 = cv2.threshold(gray34, 1, 255, cv2.THRESH_BINARY)
+x, y, w, h = cv2.boundingRect(thresh12)
+cropped_panorama34 = panorama34[y:y+h, x:x+w]
+
 matches_final = match_features(desc12[1], desc34[1], method='match1')
 matches_final = match_features(desc12[1], desc34[1], method='match2')
-final_dimg = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches_final, None)
+final_dimg = cv.drawMatches(cropped_panorama12, desc12[0], cropped_panorama34, desc34[0], matches_final, None)
 cv.namedWindow('final_dimg')
 cv.imshow('final_dimg', final_dimg)
 cv2.imwrite('results/OpenPano/flower/final_dimg.jpg', final_dimg)
 cv.waitKey(0)
 
-final_panorama = create_panorama(panorama12, panorama34, kp12, kp34, desc12, desc34, matches_final)
+final_panorama = create_panorama(cropped_panorama12, cropped_panorama34, kp12, kp34, desc12, desc34, matches_final)
 cv.namedWindow('final_panorama')
 cv.imshow('final_panorama', final_panorama)
 cv2.imwrite('results/OpenPano/flower/final_panorama.jpg', final_panorama)
