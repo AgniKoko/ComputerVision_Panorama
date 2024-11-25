@@ -43,48 +43,6 @@ cv.waitKey(0)
 kp4 = sift.detect(img4)
 desc4 = sift.compute(img4, kp4)
 
-# def match2(d1, d2):
-#     n1 = d1.shape[0]
-#     n2 = d2.shape[0]
-#
-#     matches = []
-#     for i in range(n1):
-#         fv = d1[i, :]
-#         diff = d2 - fv
-#         diff = np.abs(diff)
-#         distances = np.sum(diff, axis=1)
-#
-#         i2 = np.argmin(distances)
-#         mindist2 = distances[i2]
-#
-#         distances[i2] = np.inf
-#
-#         i3 = np.argmin(distances)
-#         mindist3 = distances[i3]
-#
-#         if mindist2 / mindist3 < 0.5:
-#             matches.append(cv.DMatch(i, i2, mindist2))
-#
-#     return matches
-#
-# def match1(d1, d2):
-#     n1 = d1.shape[0]
-#     n2 = d2.shape[0]
-#
-#     matches = []
-#     for i in range(n1):
-#         fv = d1[i, :]
-#         diff = d2 - fv
-#         diff = np.abs(diff)
-#         distances = np.sum(diff, axis=1)
-#
-#         i2 = np.argmin(distances)
-#         mindist2 = distances[i2]
-#
-#         matches.append(cv.DMatch(i, i2, mindist2))
-#
-#     return matches
-
 def match_features(d1, d2, method='match1'):
     n1 = d1.shape[0]
     n2 = d2.shape[0]
@@ -120,14 +78,9 @@ def match_features(d1, d2, method='match1'):
                 matches.append(cv.DMatch(i, i2, mindist2))
 
     return matches
-# bf = cv.BFMatcher(cv.NORM_L2, crossCheck=True)
-# matches = bf.match(desc1[1], desc2[1])
 
 matches = match_features(desc1[1], desc2[1], method='match1')
 matches = match_features(desc1[1], desc2[1], method='match2')
-
-# matches = match1(desc1[1], desc2[1])
-# matches = match2(desc1[1], desc2[1])
 
 dimg = cv.drawMatches(img1, desc1[0], img2, desc2[0], matches, None)
 cv.namedWindow('main3')
@@ -137,20 +90,6 @@ cv.waitKey(0)
 
 img_pt1 = []
 img_pt2 = []
-# for x in matches:
-#     img_pt1.append(kp1[x.queryIdx].pt)
-#     img_pt2.append(kp2[x.trainIdx].pt)
-#
-# # img_pt1 = np.array(img_pt1)
-# # img_pt2 = np.array(img_pt2)
-# img_pt1 = np.array([kp1[x.queryIdx].pt for x in matches])
-# img_pt2 = np.array([kp2[x.trainIdx].pt for x in matches])
-#
-# M, mask = cv.findHomography(img_pt2, img_pt1, cv.RANSAC)
-# # Βρίσκει πώς πρέπει να μετατραπει η πρώτη για να "ταιριάξει" με τη δευτερη
-#
-# panorama12 = cv.warpPerspective(img2, M, (img1.shape[1]+1000, img1.shape[0]+1000))
-# panorama12[0: img1.shape[0], 0: img1.shape[1]] = img1
 
 def create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches):
     img_pt1 = np.array([kp1[x.queryIdx].pt for x in matches])
@@ -164,10 +103,17 @@ def create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches):
     return panorama
 
 panorama12 = create_panorama(img1, img2, kp1, kp2, desc1, desc2, matches)
-
-cv.namedWindow('main')
-cv.imshow('main', panorama12)
+cv.namedWindow('panorama12')
+cv.imshow('panorama12', panorama12)
 cv2.imwrite('results/GES-50/panorama12.jpg', panorama12)
+cv.waitKey(0)
+
+matches = match_features(desc3[1], desc4[1], method='match1')
+matches = match_features(desc3[1], desc4[1], method='match2')
+panorama34 = create_panorama(img3, img4, kp3, kp4, desc3, desc4, matches)
+cv.namedWindow('panorama34')
+cv.imshow('panorama34', panorama34)
+cv2.imwrite('results/GES-50/panorama34.jpg', panorama34)
 cv.waitKey(0)
 
 pass
