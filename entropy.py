@@ -52,3 +52,15 @@ def calculate_f4(component_images, panorama_image, window_size=9):
 
 f4 = calculate_f4(component_images, final_panorama)
 print(f"f4 (Differential Variance of Local Entropy): {f4}")
+
+# ==============================  f9  ==============================
+
+def calculate_f9(component_images, panorama_image):
+    std_components = [np.std(img) for img in component_images]
+    avg_std_components = np.mean(std_components)
+    std_panorama = np.std(panorama_image)
+    return abs(std_panorama - avg_std_components)
+
+f9 = calculate_f9(component_images, final_panorama)
+print(f"f9 (Absolute Difference of Standard Deviations): {f9}")
+
