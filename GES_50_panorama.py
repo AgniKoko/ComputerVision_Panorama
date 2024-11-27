@@ -3,7 +3,6 @@ import numpy as np
 import cv2 as cv
 
 sift = cv.xfeatures2d_SIFT.create(400)
-cv.namedWindow('main1')
 
 def resize_image(img, width=500):
     h, w = img.shape[:2]
