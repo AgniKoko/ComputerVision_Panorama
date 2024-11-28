@@ -7,16 +7,16 @@ sift = cv.xfeatures2d_SIFT.create(400)
 # ==============================  12  ==============================
 
 img1 = cv.imread('img/NISwGSP/01.jpg')
-cv.namedWindow('img1')
-cv.imshow('img1', img1)
-cv.waitKey(0)
+# cv.namedWindow('img1')
+# cv.imshow('img1', img1)
+# cv.waitKey(0)
 kp1 = sift.detect(img1)
 desc1 = sift.compute(img1, kp1)
 
 img2 = cv.imread('img/NISwGSP/02.jpg')
-cv.namedWindow('img2')
-cv.imshow('img2', img2)
-cv.waitKey(0)
+# cv.namedWindow('img2')
+# cv.imshow('img2', img2)
+# cv.waitKey(0)
 kp2 = sift.detect(img2)
 desc2 = sift.compute(img2, kp2)
 
@@ -98,16 +98,16 @@ cropped_panorama12 = panorama12[y:y+h, x:x+w]
 # ==============================  34  ==============================
 
 img3 = cv.imread('img/NISwGSP/03.jpg')
-cv.namedWindow('img3')
-cv.imshow('img3', img3)
-cv.waitKey(0)
+# cv.namedWindow('img3')
+# cv.imshow('img3', img3)
+# cv.waitKey(0)
 kp3 = sift.detect(img3)
 desc3 = sift.compute(img3, kp3)
 
 img4 = cv.imread('img/NISwGSP/04.jpg')
-cv.namedWindow('img4')
-cv.imshow('img4', img4)
-cv.waitKey(0)
+# cv.namedWindow('img4')
+# cv.imshow('img4', img4)
+# cv.waitKey(0)
 kp4 = sift.detect(img4)
 desc4 = sift.compute(img4, kp4)
 
@@ -131,7 +131,29 @@ _, thresh12 = cv2.threshold(gray34, 1, 255, cv2.THRESH_BINARY)
 x, y, w, h = cv2.boundingRect(thresh12)
 cropped_panorama34 = panorama34[y:y+h, x:x+w]
 
-# ==============================  final  ==============================
+# ==============================  23  ==============================
+
+matches23 = match_features(desc2[1], desc3[1], method='match1')
+matches23 = match_features(desc2[1], desc3[1], method='match2')
+panorama23 = create_panorama(img2, img3, kp2, kp3, desc2, desc3, matches23)
+cv.namedWindow('panorama23')
+cv.imshow('panorama23', panorama23)
+cv2.imwrite('results/NISwGSP/panorama23.jpg', panorama23)
+kp23 = sift.detect(panorama23)
+desc23 = sift.compute(panorama23, kp23)
+cv.waitKey(0)
+
+dimg23 = cv.drawMatches(img2, desc2[0], img3, desc3[0], matches23, None)
+cv.namedWindow('main3')
+cv.imshow('main3', dimg23)
+cv2.imwrite('results/NISwGSP/dimg23.jpg', dimg23)
+
+gray23 = cv2.cvtColor(panorama23, cv2.COLOR_BGR2GRAY)
+_, thresh12 = cv2.threshold(gray23, 1, 255, cv2.THRESH_BINARY)
+x, y, w, h = cv2.boundingRect(thresh12)
+cropped_panorama23 = panorama23[y:y+h, x:x+w]
+
+# ==============================  final (test)  ==============================
 
 def match_final_features(d1, d2, method='match1'):
     n1 = d1.shape[0]
@@ -169,46 +191,91 @@ def match_final_features(d1, d2, method='match1'):
 
     return matches
 
-matches_final = match_final_features(desc12[1], desc34[1], method='match1')
-matches_final = match_final_features(desc12[1], desc34[1], method='match2')
-final_dimg = cv.drawMatches(cropped_panorama12, desc12[0], panorama34, desc34[0], matches_final, None)
+# matches_final = match_final_features(desc12[1], desc34[1], method='match1')
+# matches_final = match_final_features(desc12[1], desc34[1], method='match2')
+# final_dimg = cv.drawMatches(cropped_panorama12, desc12[0], panorama34, desc34[0], matches_final, None)
+# cv.namedWindow('final_dimg')
+# cv.imshow('final_dimg', final_dimg)
+# cv2.imwrite('results/NISwGSP/final_dimg.jpg', final_dimg)
+# cv.waitKey(0)
+#
+# print(f"Number of matches between cropped_panorama12 and panorama34: {len(matches_final)}")
+# if len(matches_final) < 4:
+#     print("Not enough matches to compute homography.")
+#     exit()
+#
+# final_panorama = create_panorama(cropped_panorama12, panorama34, kp12, kp34, desc12, desc34, matches_final)
+# cv.namedWindow('final_panorama')
+# cv.imshow('final_panorama', final_panorama)
+# cv2.imwrite('results/NISwGSP/final_panorama.jpg', final_panorama)
+# cv.waitKey(0)
+
+# ==============================  123  ==============================
+
+matches_final123 = match_final_features(desc12[1], desc23[1], method='match1')
+matches_final123 = match_final_features(desc12[1], desc23[1], method='match2')
+final_dimg123 = cv.drawMatches(cropped_panorama12, desc12[0], panorama23, desc23[0], matches_final123, None)
+cv.namedWindow('final_dimg123')
+cv.imshow('final_dimg123', final_dimg123)
+cv2.imwrite('results/NISwGSP/final_dimg123.jpg', final_dimg123)
+cv.waitKey(0)
+
+print(f"Number of matches between cropped_panorama12 and panorama23: {len(matches_final123)}")
+if len(matches_final123) < 4:
+    print("Not enough matches to compute homography.")
+    exit()
+
+final_panorama123 = create_panorama(cropped_panorama12, panorama23, kp12, kp23, desc12, desc23, matches_final123)
+cv.namedWindow('final_panorama123')
+cv.imshow('final_panorama123', final_panorama123)
+cv2.imwrite('results/NISwGSP/final_panorama123.jpg', final_panorama123)
+kp123 = sift.detect(final_panorama123)
+desc123 = sift.compute(final_panorama123, kp123)
+cv.waitKey(0)
+
+# ==============================  234  ==============================
+
+matches_final234 = match_final_features(desc23[1], desc34[1], method='match1')
+matches_final234 = match_final_features(desc23[1], desc34[1], method='match2')
+final_dimg234 = cv.drawMatches(cropped_panorama23, desc23[0], panorama34, desc34[0], matches_final234, None)
+cv.namedWindow('final_dimg234')
+cv.imshow('final_dimg234', final_dimg234)
+cv2.imwrite('results/NISwGSP/final_dimg234.jpg', final_dimg234)
+cv.waitKey(0)
+
+print(f"Number of matches between cropped_panorama23 and panorama34: {len(matches_final234)}")
+if len(matches_final234) < 4:
+    print("Not enough matches to compute homography.")
+    exit()
+
+final_panorama234 = create_panorama(cropped_panorama23, panorama34, kp23, kp34, desc23, desc34, matches_final234)
+cv.namedWindow('final_panorama234')
+cv.imshow('final_panorama234', final_panorama234)
+cv2.imwrite('results/NISwGSP/final_panorama234.jpg', final_panorama234)
+kp234 = sift.detect(final_panorama234)
+desc234 = sift.compute(final_panorama234, kp234)
+cv.waitKey(0)
+
+# ==============================  final  ==============================
+
+matches_final = match_final_features(desc123[1], desc234[1], method='match1')
+matches_final = match_final_features(desc123[1], desc234[1], method='match2')
+final_dimg = cv.drawMatches(final_panorama123, desc123[0], final_panorama234, desc234[0], matches_final, None)
 cv.namedWindow('final_dimg')
 cv.imshow('final_dimg', final_dimg)
 cv2.imwrite('results/NISwGSP/final_dimg.jpg', final_dimg)
 cv.waitKey(0)
 
-print(f"Number of matches between cropped_panorama12 and panorama34: {len(matches_final)}")
+print(f"Number of matches between cropped_panorama123 and panorama234: {len(matches_final)}")
 if len(matches_final) < 4:
     print("Not enough matches to compute homography.")
     exit()
 
-final_panorama = create_panorama(cropped_panorama12, panorama34, kp12, kp34, desc12, desc34, matches_final)
+final_panorama = create_panorama(final_panorama123, final_panorama234, kp123, kp234, desc123, desc234, matches_final)
 cv.namedWindow('final_panorama')
 cv.imshow('final_panorama', final_panorama)
 cv2.imwrite('results/NISwGSP/final_panorama.jpg', final_panorama)
 cv.waitKey(0)
-
-# ==============================  debug  ==============================
-
-matches23 = match_features(desc2[1], desc3[1], method='match1')
-matches23 = match_features(desc2[1], desc3[1], method='match2')
-panorama23 = create_panorama(img2, img3, kp2, kp3, desc2, desc3, matches23)
-cv.namedWindow('panorama23')
-cv.imshow('panorama23', panorama23)
-cv2.imwrite('results/NISwGSP/panorama23.jpg', panorama23)
-kp23 = sift.detect(panorama23)
-desc23 = sift.compute(panorama23, kp23)
-cv.waitKey(0)
-
-dimg23 = cv.drawMatches(img2, desc2[0], img3, desc3[0], matches23, None)
-cv.namedWindow('main3')
-cv.imshow('main3', dimg23)
-cv2.imwrite('results/NISwGSP/dimg23.jpg', dimg23)
-
-gray23 = cv2.cvtColor(panorama23, cv2.COLOR_BGR2GRAY)
-_, thresh12 = cv2.threshold(gray23, 1, 255, cv2.THRESH_BINARY)
-x, y, w, h = cv2.boundingRect(thresh12)
-cropped_panorama23 = panorama23[y:y+h, x:x+w]
 
 pass
 
