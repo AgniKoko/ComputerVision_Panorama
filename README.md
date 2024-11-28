@@ -5,7 +5,7 @@ This project involves implementing algorithms to create panoramas from multiple 
 
 ## Objectives
 - **Panorama Creation**: Stitch at least four images using the following feature detectors and descriptors:
-  - SIFT ([Documentation](https://docs.opencv.org/3.4/d5/d3c/classcv_1_1xfeatures2d_1_1SIFT.html))
+  - SIFT ([Documentation](https://docs.opencv.org/4.x/d7/d60/classcv_1_1SIFT.html))
   - SURF ([Documentation](https://docs.opencv.org/3.4/d5/df7/classcv_1_1xfeatures2d_1_1SURF.html))
 - **Evaluation Metrics**:
   - Differential entropy (𝑓2)
@@ -24,9 +24,10 @@ This project involves implementing algorithms to create panoramas from multiple 
    - Calculation of entropy-based and variance-based metrics to assess panorama quality.
 
 ## Data
-To execute this project, you need the dataset provided by the course instructor. Download the dataset from [this link](https://vc.ee.duth.gr:6960/index.php/s/QCb6Q5E9lqXjGt4).
+- The dataset provided by the course instructor is stored in the img directory. It represents three different scenes (GES-50, NISwGSP, OpenPano).
+- The dataset requested by the course instructor is stored in the augo directory. It represents two different scenes (scene1, scene2) from the peak of Mount "Avgo" or “Stavros Tsakiris” that is located next to the city of Xanthi, Greece.
 
-## Requirements Used
+## Requirements
 - Python 3.7.9
 - OpenCV 3.4.2.17
 - Additional Python libraries:
