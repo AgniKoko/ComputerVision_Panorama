@@ -43,6 +43,7 @@ This project involves implementing algorithms to create panoramas from multiple 
 ## Execution
 - To run a pre-made scene (GES_50, NISwGSP, OpenPano_flower) choose the corresponding python file based on the scene and the method. For the SURF method choose SURF suffix and to run with SIFT method choose the one without any suffix. After selecting the python file, run it.
 - To run a custom scene, replace the four images on the directory augo/scene1 and run augo1_panorama.py (SIFT method) or augo1_panorama_SURF.py (SURF method).
+- After you have run the chosen scene(s), in the entropy.py file select which scene(s) you'd like to calculate the evaluation metrics for, comment out the rest of the scenes and run the python file.
   
 ## Results
 Generated panoramas and their corresponding metrics will be saved in the results directory. Example output includes:
