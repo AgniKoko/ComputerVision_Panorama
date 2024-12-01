@@ -40,6 +40,10 @@ This project involves implementing algorithms to create panoramas from multiple 
 𝑓4 (Differential Variance of Local Entropy): Measures the difference between the local entropy of the panorama and the input images.
 𝑓9 (Absolute Difference of Standard Deviations): Evaluates the consistency of standard deviations between the panorama and the input images.
 
+## Execution
+- To run a pre-made scene (GES_50, NISwGSP, OpenPano_flower) choose the corresponding python file based on the scene and the method. For the SURF method choose SURF suffix and to run with SIFT method choose the one without any suffix. After selecting the python file, run it.
+- To run a custom scene, replace the four images on the directory augo/scene1 and run augo1_panorama.py (SIFT method) or augo1_panorama_SURF.py (SURF method).
+  
 ## Results
 Generated panoramas and their corresponding metrics will be saved in the results directory. Example output includes:
 - Stitched panorama images
